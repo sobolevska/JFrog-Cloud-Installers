@@ -136,9 +136,9 @@ primary=${IS_PRIMARY}
 EOF
 
 cat <<EOF >/var/opt/jfrog/artifactory/etc/db.properties
-type=mssql
-driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
-url=${DB_URL};databaseName=${DB_NAME};sendStringParametersAsUnicode=false;applicationName=Artifactory Binary Repository
+type=postgresql
+driver=org.postgresql.Driver
+url=${DB_URL}
 username=${DB_USER}
 password=${DB_PASSWORD}
 EOF
