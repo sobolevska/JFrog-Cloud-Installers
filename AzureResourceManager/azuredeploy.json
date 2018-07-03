@@ -361,7 +361,6 @@
       "name": "[variables('nicName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('pipName'))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
       ],
@@ -388,7 +387,6 @@
       "name": "[concat(variables('nicName'),'2')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('pipName'),'2')]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
       ],
@@ -410,36 +408,6 @@
       }
     },
     {
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('pipName')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Standard"
-      },
-      "apiVersion": "2017-08-01",
-      "properties": {
-        "publicIPAllocationMethod": "Static",
-        "dnsSettings": {
-          "domainNameLabel": "[variables('namingInfix')]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(variables('pipName'),'2')]",
-      "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "Standard"
-      },
-      "apiVersion": "2017-08-01",
-      "properties": {
-        "publicIPAllocationMethod": "Static",
-        "dnsSettings": {
-          "domainNameLabel": "[concat(variables('namingInfix'),'2')]"
-        }
-      }
-    },
-    {
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('lbName')]",
       "location": "[resourceGroup().location]",
@@ -448,8 +416,7 @@
         "name": "Standard"
       },
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('pipName'))]",
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('pipName'), '2')]"
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "tags": {
         "displayName": "Load Balancer"
@@ -459,16 +426,16 @@
           {
             "name": "[variables('feIpConfigName')]",
             "properties": {
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('pipName'))]"
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
               }
             }
           },
           {
             "name": "[concat(variables('feIpConfigName'),'2')]",
             "properties": {
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('pipName'),'2'))]"
+              "subnet": {
+                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
               }
             }
           }
@@ -688,6 +655,12 @@
                         "subnet": {
                           "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
                         },
+                        "publicIpAddressConfiguration": {
+                          "name": "[variables('pipName')]",
+                          "properties": {
+                            "idleTimeoutInMinutes": 15
+                          }
+                        },
                         "loadBalancerBackendAddressPools": [
                           {
                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('lbName'), '/backendAddressPools/', variables('bePoolName'))]"
@@ -778,6 +751,12 @@
                         "subnet": {
                           "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
                         },
+                        "publicIpAddressConfiguration": {
+                          "name": "[concat(variables('pipName'),'2')]",
+                          "properties": {
+                            "idleTimeoutInMinutes": 15
+                          }
+                        },
                         "loadBalancerBackendAddressPools": [
                           {
                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('lbName'), '/backendAddressPools/', variables('bePoolName'),'2')]"
@@ -819,11 +798,5 @@
         }
       }
     }
-  ],
-  "outputs": {
-    "fqdn": {
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',concat(variables('pipName'),'2')),'2016-03-30').dnsSettings.fqdn]",
-      "type": "string"
-    }
-  }
+  ]
 }
