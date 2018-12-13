@@ -655,12 +655,6 @@
                         "subnet": {
                           "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
                         },
-                        "publicIpAddressConfiguration": {
-                          "name": "[variables('pipName')]",
-                          "properties": {
-                            "idleTimeoutInMinutes": 15
-                          }
-                        },
                         "loadBalancerBackendAddressPools": [
                           {
                             "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('lbName'), '/backendAddressPools/', variables('bePoolName'))]"
@@ -750,12 +744,6 @@
                       "properties": {
                         "subnet": {
                           "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName')), '/subnets/', variables('subnetName'))]"
-                        },
-                        "publicIpAddressConfiguration": {
-                          "name": "[concat(variables('pipName'),'2')]",
-                          "properties": {
-                            "idleTimeoutInMinutes": 15
-                          }
                         },
                         "loadBalancerBackendAddressPools": [
                           {
